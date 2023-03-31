@@ -61,6 +61,7 @@ class Course(models.Model):
     instructors = models.ManyToManyField(Instructor)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Enrollment')
     total_enrollment = models.IntegerField(default=0)
+    questions = models.ForeignKey('Question', on_delete=models.CASCADE)
     is_enrolled = False
 
     def __str__(self):
@@ -77,7 +78,8 @@ class Lesson(models.Model):
 
 
 # Enrollment model
-# <HINT> Once a user enrolled a class, an enrollment entry should be created between the user and course
+# <HINT> Once a user enrolled a class, an enrollment entry should be created 
+# between the user and course
 # And we could use the enrollment to track information such as exam submissions
 class Enrollment(models.Model):
     AUDIT = 'audit'
@@ -93,11 +95,24 @@ class Enrollment(models.Model):
     date_enrolled = models.DateField(default=now)
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
+    
 
 
 # <HINT> Create a Question Model with:
+class Question(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    choices = models.ManyToManyField('Choice', through="Test")
+    points = models.FloatField()
+
+class Choice(models.Model):
+    text = models.TextField
+    correct = models.BooleanField
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    
+
     # Used to persist question content for a course
-    # Has a One-To-Many (or Many-To-Many if you want to reuse questions) relationship with course
+    # Has a One-To-Many (or Many-To-Many if you want to reuse questions) 
+    # relationship with course
     # Has a grade point for each question
     # Has question content
     # Other fields and methods you would like to design
@@ -116,6 +131,7 @@ class Enrollment(models.Model):
     #        return False
 
 
+
 #  <HINT> Create a Choice Model with:
     # Used to persist choice content for a question
     # One-To-Many (or Many-To-Many if you want to reuse choices) relationship with Question
@@ -128,7 +144,7 @@ class Enrollment(models.Model):
 # One enrollment could have multiple submission
 # One submission could have multiple choices
 # One choice could belong to multiple submissions
-#class Submission(models.Model):
-#    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-#    chocies = models.ManyToManyField(Choice)
-#    Other fields and methods you would like to design
+class Submission(models.Model):
+   enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+   chocies = models.ManyToManyField(Choice)
+   #Other fields and methods you would like to design
