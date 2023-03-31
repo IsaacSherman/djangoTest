@@ -61,7 +61,7 @@ class Course(models.Model):
     instructors = models.ManyToManyField(Instructor)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Enrollment')
     total_enrollment = models.IntegerField(default=0)
-    questions = models.ForeignKey('Question', on_delete=models.CASCADE)
+    # questions = models.ForeignKey('Question', on_delete=models.CASCADE)
     is_enrolled = False
 
     def __str__(self):
@@ -102,14 +102,17 @@ class Enrollment(models.Model):
 class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     choices = models.ManyToManyField('Choice', through="Test")
-    points = models.FloatField()
+    points = models.FloatField(default=1)
+    text= models.TextField(default="Why did the chicken cross the road?")
 
 class Choice(models.Model):
-    text = models.TextField
-    correct = models.BooleanField
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    text = models.TextField(default="Orange you glad I didn't say banana?")
+    correct = models.BooleanField(default= False)
+    questionId = models.ForeignKey(Question, null=True, on_delete= models.CASCADE)
     
-
+class Test(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
     # Used to persist question content for a course
     # Has a One-To-Many (or Many-To-Many if you want to reuse questions) 
     # relationship with course
@@ -144,7 +147,7 @@ class Choice(models.Model):
 # One enrollment could have multiple submission
 # One submission could have multiple choices
 # One choice could belong to multiple submissions
-class Submission(models.Model):
-   enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-   chocies = models.ManyToManyField(Choice)
-   #Other fields and methods you would like to design
+# class Submission(models.Model):
+#    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+#    chocies = models.ManyToManyField(Choice)
+#    #Other fields and methods you would like to design
