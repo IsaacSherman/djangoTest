@@ -14,13 +14,13 @@ urlpatterns = [
     path('logout/', views.logout_request, name='logout'),
     # ex: /onlinecourse/5/
     path('<int:pk>/', views.CourseDetailView.as_view(), name='course_details'),
-    # ex: /enroll/5/
+    # ex: /5/enroll/
     path('<int:course_id>/enroll/', views.enroll, name='enroll'),
 
     # <HINT> Create a route for submit view
-    # path('<int:course_id>/submit/', views.submit, name='enroll'),
+    path('<int:course_id>/submit/', views.submit, name='submit'),
 
     # <HINT> Create a route for show_exam_result view
-    # path('<int:course_id>/results/', views.results, name='enroll'),
+    path('<int:course_id>/results/', views.show_exam_result, name='enroll'),
 
  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
