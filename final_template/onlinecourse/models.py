@@ -104,6 +104,7 @@ class Question(models.Model):
     choices = models.ManyToManyField('Choice', through="Test")
     points = models.FloatField(default=1)
     text= models.TextField(default="Why did the chicken cross the road?")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 class Choice(models.Model):
     text = models.TextField(default="Orange you glad I didn't say banana?")
