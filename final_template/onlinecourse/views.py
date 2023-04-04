@@ -120,6 +120,7 @@ def submit(request, course_id):
     sub = Submission.objects.create(enrollment=e)
     choices = filter(lambda x: x.startswith('choice'), request.POST)
     sub.choices =  list(map(lambda x: int(request.POST[x]), choices))
+    Submission.objects.update(Submission, e, choices)
     return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result',
                                         args=(sub.id,)))
 
@@ -142,6 +143,19 @@ def submit(request, course_id):
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
 def show_exam_result(request, course_id, submission_id):
-        return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
+    context = {}
+    context["course"] = get_object_or_404(Course, pk=course_id)
+    context["submission"] = get_object_or_404(Submission, pk=submission_id)
+    score, max_score = 0,0
+    for choice in context.submission.choices:
+        question = get_object_or_404(Question, pk=choice.questionId)
+        if choice.is_correct:
+            score += question.points
+        max_score += question.points
+    
+    context["score"] = score
+    context["max_score"] = max_score
+    
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
