@@ -100,7 +100,6 @@ class Enrollment(models.Model):
 # <HINT> Create a Question Model with:
 class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    # choices = models.ManyToManyField('Choice', through="Test")
     points = models.FloatField(default=1)
     text= models.TextField(default="Why did the chicken cross the road?")
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
@@ -108,11 +107,11 @@ class Question(models.Model):
 class Choice(models.Model):
     text = models.TextField(default="Orange you glad I didn't say banana?")
     correct = models.BooleanField(default= False)
-    questionId = models.ForeignKey(Question, on_delete= models.CASCADE)
+    question = models.ForeignKey(Question, on_delete= models.CASCADE)
     
-class Test(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+# class Test(models.Model):
+#     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+#     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
     # Used to persist question content for a course
     # Has a One-To-Many (or Many-To-Many if you want to reuse questions) 
     # relationship with course

@@ -66,13 +66,17 @@
             <button data-toggle="collapse" data-target="#exam">Exam</button>
             <div id="exam" class="collapse">
                 Test
-                {% for question in course.question_set.all %}
-                    <h5>{{ question }}</h5>
-                        {% for choice in question.choices %}
-                            <h6>{{ choice }}</h6>
-                        End of choice
-                        {% endfor %}
-                    end of question
+                {% for lesson in course.lesson_set.all %}
+                    {% for question in lesson.question_set.all %}
+                        <h5>{{ question.text }}</h5>
+                            {% for choice in question.choice_set.all %}
+                            <div class="choice">
+                                <input type="checkbox" id="choice" name="vehicle3" value="Boat">
+                                 <label for="choice">{{ choice.text }}</label><br>                            
+                                </div>
+                            {% endfor %}
+                        end of question
+                    {% endfor %}
                 {% endfor %}
                 End of test
             </div>
