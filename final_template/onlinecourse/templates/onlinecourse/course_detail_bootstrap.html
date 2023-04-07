@@ -55,7 +55,18 @@
             {% if user.is_authenticated %}
             <button data-toggle="collapse" data-target="#exam">Exam</button>
             <div id="exam" class="collapse">
-                Test
+                Test 1
+                {% for form in forms %}
+                <form action="" method="post">                                                                                             
+                    {% for field in form %}                                                                                                
+                      {{ field }}
+                    {% endfor %}                                                                                                           
+                    {% csrf_token %}                                                                                                       
+                    <input type="submit" value="Submit Selected" />
+                </form>                                                                                                                    
+              
+                {% endfor %}
+                Test 2
                 {% for lesson in course.lesson_set.all %}
                     {% for question in lesson.question_set.all %}
                         <h5>{{ question.text }}</h5>

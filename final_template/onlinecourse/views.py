@@ -90,7 +90,7 @@ class CourseDetailView(generic.DetailView):
     template_name = 'onlinecourse/course_detail_bootstrap.html'
 
 
-def enroll(request, course_id):
+def enroll(request, course_id): 
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
 
@@ -147,13 +147,14 @@ def show_exam_result(request, course_id, submission_id):
     context = {}
     context["course"] = get_object_or_404(Course, pk=course_id)
     context["submission"] = get_object_or_404(Submission, pk=submission_id)
-    # context["forms"] = []
+    context["forms"] = []
     # for lesson in context["course"].lesson_set.all:
     #     for question in lesson.question_set.all:
     #         context["forms"].append(ChoiceForm(question.pk))
     score, max_score = 0,0
     for choice in context.submission.choices:
         question = get_object_or_404(Question, pk=choice.questionId)
+        context["forms"].append(ChoiceForm(question))
         if choice.is_correct:
             score += question.points
         max_score += question.points
