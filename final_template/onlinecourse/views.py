@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 # <HINT> Import any new Models here
 from .models import Course, Enrollment, Question, Choice, Submission
+from .forms import ChoiceForm
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -146,6 +147,10 @@ def show_exam_result(request, course_id, submission_id):
     context = {}
     context["course"] = get_object_or_404(Course, pk=course_id)
     context["submission"] = get_object_or_404(Submission, pk=submission_id)
+    # context["forms"] = []
+    # for lesson in context["course"].lesson_set.all:
+    #     for question in lesson.question_set.all:
+    #         context["forms"].append(ChoiceForm(question.pk))
     score, max_score = 0,0
     for choice in context.submission.choices:
         question = get_object_or_404(Question, pk=choice.questionId)

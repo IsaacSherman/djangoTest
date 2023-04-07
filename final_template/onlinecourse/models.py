@@ -108,7 +108,8 @@ class Choice(models.Model):
     text = models.TextField(default="Orange you glad I didn't say banana?")
     correct = models.BooleanField(default= False)
     question = models.ForeignKey(Question, on_delete= models.CASCADE)
-    
+
+
 # class Test(models.Model):
 #     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 #     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
