@@ -97,19 +97,18 @@ class Enrollment(models.Model):
     rating = models.FloatField(default=5.0)
     
 
-
 # <HINT> Create a Question Model with:
 class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    choices = models.ManyToManyField('Choice', through="Test")
+    # choices = models.ManyToManyField('Choice', through="Test")
     points = models.FloatField(default=1)
     text= models.TextField(default="Why did the chicken cross the road?")
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
 
 class Choice(models.Model):
     text = models.TextField(default="Orange you glad I didn't say banana?")
     correct = models.BooleanField(default= False)
-    questionId = models.ForeignKey(Question, null=True, on_delete= models.CASCADE)
+    questionId = models.ForeignKey(Question, on_delete= models.CASCADE)
     
 class Test(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -150,5 +149,5 @@ class Test(models.Model):
 # One choice could belong to multiple submissions
 class Submission(models.Model):
    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-   chocies = models.ManyToManyField(Choice)
+   choices = models.ManyToManyField(Choice)
    #Other fields and methods you would like to design
