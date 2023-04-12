@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 # <HINT> Import any new Models here
 from .models import Course, Enrollment, Question, Choice, Submission
-from .forms import ChoiceForm
+# from .forms import ChoiceForm
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth import login, logout, authenticate
+from datetime import date
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -97,11 +98,14 @@ def enroll(request, course_id):
     is_enrolled = check_if_enrolled(user, course)
     if not is_enrolled and user.is_authenticated:
         # Create an enrollment
-        Enrollment.objects.create(user=user, course=course, mode='honor')
+        e= Enrollment.objects.create(user=user, course=course, mode='Honor', 
+        date_enrolled=date.today(), rating=5)
         course.total_enrollment += 1
         course.save()
+        e.save()
 
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:course_details', args=(course.id,)))
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:course_details',
+                                        args=(course.id,)))
 
 
 # <HINT> Create a submit view to create an exam submission record for a course enrollment,
@@ -114,16 +118,19 @@ def enroll(request, course_id):
 def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
-    e = Enrollment()
+    if not check_if_enrolled(user, course):
+        enroll(request, course_id)
+    e = Enrollment.objects.filter(user=user, course=course)[0]
     e.user = user
     e.course = course
 
     sub = Submission.objects.create(enrollment=e)
-    choices = filter(lambda x: x.startswith('choice'), request.POST)
-    sub.choices =  list(map(lambda x: int(request.POST[x]), choices))
-    Submission.objects.update(Submission, e, choices)
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result',
-                                        args=(sub.id,)))
+    choices= filter(lambda x: x.startswith('choice'), request.POST)
+    sub.choices.set(list(map(lambda x: int(request.POST[x]), choices)))
+    sub.save()
+    Submission.objects.update()
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:results',
+                                        args=(course_id, sub.id,)))
 
 
 # <HINT> A example method to collect the selected choices from the exam form from the request object
@@ -152,10 +159,10 @@ def show_exam_result(request, course_id, submission_id):
     #     for question in lesson.question_set.all:
     #         context["forms"].append(ChoiceForm(question.pk))
     score, max_score = 0,0
-    for choice in context.submission.choices:
-        question = get_object_or_404(Question, pk=choice.questionId)
-        context["forms"].append(ChoiceForm(question))
-        if choice.is_correct:
+    for choice in context["submission"].choices.all():
+        question = get_object_or_404(Question, pk=choice.question_id)
+        # context["forms"].append(ChoiceForm(question))
+        if choice.correct:
             score += question.points
         max_score += question.points
     

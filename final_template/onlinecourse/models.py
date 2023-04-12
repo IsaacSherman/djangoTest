@@ -95,7 +95,10 @@ class Enrollment(models.Model):
     date_enrolled = models.DateField(default=now)
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
-    
+    def __str__(self):
+        return "User: " + str(self.user) + "," + \
+               "Course: " + str(self.course)
+
 
 # <HINT> Create a Question Model with:
 class Question(models.Model):
@@ -103,12 +106,15 @@ class Question(models.Model):
     points = models.FloatField(default=1)
     text= models.TextField(default="Why did the chicken cross the road?")
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.text
 
 class Choice(models.Model):
     text = models.TextField(default="Orange you glad I didn't say banana?")
     correct = models.BooleanField(default= False)
     question = models.ForeignKey(Question, on_delete= models.CASCADE)
-
+    def __str__(self):
+        return self.text
 
 # class Test(models.Model):
 #     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -150,4 +156,8 @@ class Choice(models.Model):
 class Submission(models.Model):
    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
    choices = models.ManyToManyField(Choice)
+   def __str__(self):
+        return "Enrollment: " + str(self.enrollment) + "," + \
+               "Choices: [" + ', '.join(map( lambda x:str(x.id), self.choices.all())) + \
+               "]"
    #Other fields and methods you would like to design

@@ -8,9 +8,9 @@ from django.urls import reverse
 from django.forms import Form
 from django.contrib.auth import login, logout, authenticate
 
-class ChoiceForm(Form):
-    def __init__(self, questionId, *args,**kwargs):
-        super(forms.Form, self).__init__(args, kwargs)
-        question = Question.objects.get_object_or_404(Question, pk=questionId)
-        self.selected = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                    queryset=Choices.objects.filter(question=question))
+# class ChoiceForm(Form):
+#     def __init__(self, questionId, *args,**kwargs):
+#         super(forms.Form, self).__init__(args, kwargs)
+#         question = Question.objects.get_object_or_404(Question, pk=questionId)
+#         self.selected = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+#                     queryset=Choices.objects.filter(question=question))
