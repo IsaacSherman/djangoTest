@@ -172,19 +172,16 @@ def show_exam_result(request, course_id, submission_id):
                 if choice.correct:
                     if choice.id in context["choice_ids"]:
                         number_correct += 1
-                        number_guessed += 1
                 else: #choice was wrong
                     if choice_id not in context["choice_ids"]:
                         number_correct += 1
-                    else: #it was selected
-                        number_guessed += 1
             ratio = number_correct/num_choices
             if number_correct != 0:
                 score += question.points * ratio
 
     context["score"] = score
     context["max_score"] = max_score
-    
+    context["final_score"] = score/max_score
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
