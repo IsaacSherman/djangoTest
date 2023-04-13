@@ -154,18 +154,34 @@ def show_exam_result(request, course_id, submission_id):
     context = {}
     context["course"] = get_object_or_404(Course, pk=course_id)
     context["submission"] = get_object_or_404(Submission, pk=submission_id)
-    context["forms"] = []
+    context["choice_ids"] = []
     # for lesson in context["course"].lesson_set.all:
     #     for question in lesson.question_set.all:
     #         context["forms"].append(ChoiceForm(question.pk))
     score, max_score = 0,0
     for choice in context["submission"].choices.all():
-        question = get_object_or_404(Question, pk=choice.question_id)
         # context["forms"].append(ChoiceForm(question))
-        if choice.correct:
-            score += question.points
-        max_score += question.points
+        context["choice_ids"].append(choice.id)
     
+    for lesson in context["course"].lesson_set.all():
+        for question in lesson.question_set.all():
+            num_choices = len(question.choice_set.all())
+            max_score += question.points
+            number_correct, number_guessed= 0,0
+            for choice in question.choice_set.all():
+                if choice.correct:
+                    if choice.id in context["choice_ids"]:
+                        number_correct += 1
+                        number_guessed += 1
+                else: #choice was wrong
+                    if choice_id not in context["choice_ids"]:
+                        number_correct += 1
+                    else: #it was selected
+                        number_guessed += 1
+            ratio = number_correct/num_choices
+            if number_correct != 0:
+                score += question.points * ratio
+
     context["score"] = score
     context["max_score"] = max_score
     
