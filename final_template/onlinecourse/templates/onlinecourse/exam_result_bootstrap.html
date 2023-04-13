@@ -72,13 +72,14 @@
                             {% else %}
                                 <img height="12" width="12" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/RedX.svg/1200px-RedX.svg.png" alt="Red X"/>
                             {%endif%}</td>
-                        
+                        <td>
                             <input read-only type="checkbox" name="choice_{{choice.id}}"
                                    class="form-check-input" id="{{choice.id}}" 
                         {% if choice.id in choice_ids %}
                             checked
                         {% endif %}
                                    value="{{choice.id}}">{{ choice.text }}
+                        </td>
                         </label>
                             </tr>
                     </div>
