@@ -59,18 +59,31 @@
                 <div class="card-header"><h5>{{ question.text}}</h5></div>
                 {% csrf_token %}
                 <div class="form-group">
+                    <table>
                     {% for choice in question.choice_set.all %}
                     <div class="form-check">
-                        <label class="form-check-label">
+                            <tr>
+                                <label class="form-check-label">
+                                    <td>
                             {% if choice.correct %}
-                                {% if choice.id in submission.choices%}
-                            {%endif%}
+                                {% if choice.id in choice_ids %}
+                                <img height="12" width="12" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Green_check.svg/2048px-Green_check.svg.png" alt="Green Check"/>
+                                {%endif%}
+                            {% else %}
+                                <img height="12" width="12" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/RedX.svg/1200px-RedX.svg.png" alt="Red X"/>
+                            {%endif%}</td>
+                        
                             <input read-only type="checkbox" name="choice_{{choice.id}}"
-                                   class="form-check-input" id="{{choice.id}}"
+                                   class="form-check-input" id="{{choice.id}}" 
+                        {% if choice.id in choice_ids %}
+                            checked
+                        {% endif %}
                                    value="{{choice.id}}">{{ choice.text }}
                         </label>
+                            </tr>
                     </div>
                     {% endfor %}
+                </table>
                 </div>
             </div>
             {% endfor %}
