@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
+    <link rel="stylesheet" href="{% static '/course.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-
+ 
  <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -59,34 +60,50 @@
                 <div class="card-header"><h5>{{ question.text}}</h5></div>
                 {% csrf_token %}
                 <div class="form-group">
-                    <table>
+                
                     {% for choice in question.choice_set.all %}
                     <div class="form-check">
-                            <tr>
-                                <label class="form-check-label">
-                                    <td>
+                        <label class="form-check-label">
+
+                                    <div class="container">
+                                        <div class="row">
+                                    <div style="col-sm" padding="10px">
+                                        <img width="12px" height="12px"  
+                                        style="float: left; margin: 5px;" 
                             {% if choice.correct %}
                                 {% if choice.id in choice_ids %}
-                                <img height="12" width="12" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Green_check.svg/2048px-Green_check.svg.png" alt="Green Check"/>
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Green_check.svg/2048px-Green_check.svg.png" alt="Green Check"
+                                {%else %}
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/RedX.svg/1200px-RedX.svg.png" alt="Red X"
                                 {%endif%}
                             {% else %}
-                                <img height="12" width="12" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/RedX.svg/1200px-RedX.svg.png" alt="Red X"/>
-                            {%endif%}</td>
-                        <td>
-                            <input read-only type="checkbox" name="choice_{{choice.id}}"
+                                {% if choice.id not in choice_ids %}
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Green_check.svg/2048px-Green_check.svg.png" alt="Green Check"
+                                {%else %}
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/RedX.svg/1200px-RedX.svg.png" alt="Red X"
+                                {%endif%}
+                            {%endif%}
+                            />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <div style="col-sm">
+                                    <input read-only type="checkbox" disabled="true" name="choice_{{choice.id}}"
                                    class="form-check-input" id="{{choice.id}}" 
                         {% if choice.id in choice_ids %}
                             checked
                         {% endif %}
-                                   value="{{choice.id}}">{{ choice.text }}
-                        </td>
-                        </label>
-                            </tr>
+                                   value="{{choice.id}}">
+                            </div>
+                            <div style="col-sm">
+
+                            {{ choice.text }}
+                        </div>
+                    </div row>
+                </div>
                     </div>
                     {% endfor %}
                 </table>
                 </div>
             </div>
+        </label>
             {% endfor %}
         {% endfor %}        </div>
     </div>
