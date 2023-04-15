@@ -42,12 +42,12 @@
     {% if grade > 80 %}
     <div class="alert alert-success">
        <!--HINT Display passed info -->
-       <h6>Congratulations, you passed with a score of {{grade}}/100</h6>
+       <h6><b>Congratulations {{user}},</b> you passed with a score of {{grade}}/100</h6>
     </div>
         {% else %}
         <div class="alert alert-danger">
             <!--HINT Display failed info -->
-            <h6>Congratulations, you failed with a score of {{grade}}/100</h6>
+            <h6>Sorry, you failed with a score of {{grade}}/100</h6>
         </div>
         <a class="btn btn-link text-danger" href="{% url 'onlinecourse:course_details' course.id %}">Re-test</a>
         {% endif %}
@@ -93,8 +93,19 @@
                                    value="{{choice.id}}">
                             </div>
                             <div style="col-sm">
-
-                            {{ choice.text }}
+                            {% if choice.correct %}
+                                {% if choice.id in choice_ids %}
+                                <div style="color:green;">Correct answer: {{choice.text}}</div>
+                                {%else %}
+                                <div style="color:yellow;">Not Selected: {{choice.text}}</div>
+                                    {%endif%}
+                            {% else %}
+                                {% if choice.id not in choice_ids %}
+                                <div style="color:black;">{{choice.text}}</div>
+                                {%else %}
+                                <div style="color:red;">Incorrect answer: {{choice.text}}</div>
+                                {%endif%}
+                            {%endif%}
                         </div>
                     </div row>
                 </div>
@@ -105,7 +116,8 @@
             </div>
         </label>
             {% endfor %}
-        {% endfor %}        </div>
+        {% endfor %}        
+    </div>
     </div>
 </body>
 </html>
